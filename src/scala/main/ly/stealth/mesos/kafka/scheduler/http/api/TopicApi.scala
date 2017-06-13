@@ -18,7 +18,7 @@ package ly.stealth.mesos.kafka.scheduler.http.api
 
 import java.lang.{Integer => JInt}
 import javax.ws.rs.core.{MediaType, Response}
-import javax.ws.rs.{DefaultValue, GET, POST, Path, PathParam, Produces}
+import javax.ws.rs.{DefaultValue, FormParam, GET, POST, Path, PathParam, Produces}
 import ly.stealth.mesos.kafka.scheduler.{Expr, Rebalancer}
 import ly.stealth.mesos.kafka.scheduler.http.BothParam
 import ly.stealth.mesos.kafka.{ListTopicsResponse, RebalanceStartResponse}
@@ -63,7 +63,7 @@ trait TopicApiComponentImpl extends TopicApiComponent {
     @POST
     @Produces(Array(MediaType.APPLICATION_JSON))
     def deletePost(
-      @BothParam("topic") topicExpr: String
+      @FormParam("topic") topicExpr: String
     ): Response = {
       if (topicExpr == null)
         return Status.BadRequest("topic required")
