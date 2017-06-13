@@ -59,6 +59,27 @@ trait TopicApiComponentImpl extends TopicApiComponent {
       @DefaultValue("*") @BothParam("topic") expr: String
     ) = list(expr)
 
+    @Path("delete")
+    @POST
+    @Produces(Array(MediaType.APPLICATION_JSON))
+    def deletePost(
+      @BothParam("topic") topicExpr: String
+    ): Response = {
+      if (topicExpr == null)
+        return Status.BadRequest("topic required")
+
+      val names = Expr.expandTopics(topicExpr).toSet
+
+      val missing = names.filter(cluster.topics.getTopic(_) == null)
+      if(missing.nonEmpty) {
+        Status.BadRequest(s"topic${if (missing.size > 1) "s" else ""} not found ${missing.mkString(",")}")
+      } else {
+        Response.ok(ListTopicsResponse(
+          names.toSeq.map(cluster.topics.deleteTopic(_))
+        )).build()
+      }
+    }
+
     @Path("{op: (add|update)}")
     @POST
     @Produces(Array(MediaType.APPLICATION_JSON))
