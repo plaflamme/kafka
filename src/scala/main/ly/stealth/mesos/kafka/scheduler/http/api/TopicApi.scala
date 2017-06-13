@@ -75,7 +75,7 @@ trait TopicApiComponentImpl extends TopicApiComponent {
         Status.BadRequest(s"topic${if (missing.size > 1) "s" else ""} not found ${missing.mkString(",")}")
       } else {
         Response.ok(ListTopicsResponse(
-          names.toSeq.map(cluster.topics.deleteTopic(_))
+          names.toSeq.sorted.map(cluster.topics.deleteTopic(_))
         )).build()
       }
     }
